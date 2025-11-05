@@ -20,6 +20,9 @@ global int32 WindowHeight = 720;
 global_const f32 ShakeDecayRate = 3.0f;
 global f32 CameraShakeStrength = 0.0f;
 
+global f32 ParticleTimer = 0.0f;
+global_const f32 ParticleSpawnInterval = 0.05f;
+
 internal void ShakeCamera(Camera2D* Camera, f32 dt)
 {
     CameraShakeStrength = Lerp(CameraShakeStrength, 0, ShakeDecayRate * dt);
@@ -69,7 +72,7 @@ int main(void)
     Vector2 Stars[MAX_STARS];
     for(int32 i = 0; i < MAX_STARS; i++)
     {
-        Stars[i] = (Vector2){RandomFloat(0.0f, WindowWidth), RandomFloat(0.0f, WindowHeight)};
+        Stars[i] = (Vector2){RandomFloat(0.0f, (f32)WindowWidth), RandomFloat(0.0f, (f32)WindowHeight)};
     }
 
     particle_system Particles;
@@ -116,7 +119,7 @@ int main(void)
 
             for(int32 i = 0; i < MAX_STARS; i++)
             {
-                Stars[i] = (Vector2){RandomFloat(0.0f, WindowWidth), RandomFloat(0.0f, WindowHeight)};
+                Stars[i] = (Vector2){RandomFloat(0.0f, (f32)WindowWidth), RandomFloat(0.0f, (f32)WindowHeight)};
             }
         }
 
@@ -155,10 +158,15 @@ int main(void)
         {
             AcceleratePlayer(&Player, dt);
 
-            f32 Radians = Player.Angle * DEG2RAD;
-            Vector2 Direction = (Vector2){sinf(Radians), -cosf(Radians)};
-            Vector2 FirePosition = Vector2Subtract(Player.Position, Vector2Scale(Direction, Player.Texture.height * 0.5f));
-            EmitParticles(&Particles, FirePosition, ORANGE, 1);
+            ParticleTimer += dt;
+            if(ParticleTimer >= ParticleSpawnInterval)
+            {
+                f32 Radians = Player.Angle * DEG2RAD;
+                Vector2 Direction = (Vector2){sinf(Radians), -cosf(Radians)};
+                Vector2 FirePosition = Vector2Subtract(Player.Position, Vector2Scale(Direction, Player.Texture.height * 0.5f));
+                EmitParticles(&Particles, FirePosition, ORANGE, 5);
+                ParticleTimer = 0.0f;
+            }
         }
         if(IsKeyDown(KEY_A))
         {

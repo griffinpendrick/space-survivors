@@ -14,7 +14,7 @@ typedef struct
     f32 Angle;
 } player;
 
-internal inline void AcceleratePlayer(player* Player, f32 dt)
+void AcceleratePlayer(player* Player, f32 dt)
 {
     f32 Radians = Player->Angle * DEG2RAD;
     Vector2 Direction = (Vector2){sinf(Radians), -cosf(Radians)};
@@ -22,7 +22,7 @@ internal inline void AcceleratePlayer(player* Player, f32 dt)
     Player->Velocity.y += Direction.y * Player->Acceleration.y * dt;
 }
 
-internal inline void UpdatePlayer(player* Player, int32 WindowWidth, int32 WindowHeight, f32 dt)
+void UpdatePlayer(player* Player, int32 WindowWidth, int32 WindowHeight, f32 dt)
 {
     Player->Velocity = Vector2Lerp(Player->Velocity, (Vector2){0.0f, 0.0f}, FRICTION_COEFFICIENT * dt);
     Player->Position.x += Player->Velocity.x * dt;
@@ -32,7 +32,7 @@ internal inline void UpdatePlayer(player* Player, int32 WindowWidth, int32 Windo
     Player->Position.y = Wrap(Player->Position.y, -15.0f, WindowHeight + 15.0f);
 }
 
-internal inline void DrawPlayer(const player Player)
+void DrawPlayer(const player Player)
 {
     DrawTexturePro(Player.Texture,
         (Rectangle){0.0f, 0.0f, (f32)Player.Texture.width, (f32)Player.Texture.height},

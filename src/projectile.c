@@ -46,7 +46,7 @@ void UpdateProjectiles(projectile_pool* Projectiles, int32 WindowWidth, int32 Wi
     }
 }
 
-internal inline void DrawProjectiles(const projectile_pool Projectiles)
+void DrawProjectiles(const projectile_pool Projectiles)
 {
     for(int32 i = 0; i < MAX_PROJECTILES; i++)
     {
@@ -61,7 +61,7 @@ internal inline void DrawProjectiles(const projectile_pool Projectiles)
             {
                 Vector2 Trail = Vector2Subtract(Position, Vector2Scale(Direction, j * 3.0f));
                 Color Fade = SKYBLUE;
-                Fade.a = (uint8)Clamp((200 - j * 15), 0, 255);
+                Fade.a = (uint8)Clamp((200.0f - j * 15.0f), 0.0f, 255.0f);
                 DrawCircleV(Trail, 2.0f, Fade);
             }
         }

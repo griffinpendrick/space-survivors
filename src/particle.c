@@ -27,26 +27,26 @@ void UpdateParticles(particle_system* Particles, f32 dt)
 
 void EmitParticles(particle_system* Particles, Vector2 Position, Color ParticleColor, int Count)
 {
-    for(int32 j = 0; j < Count; j++)
+    for(int32 i = 0; i < Count; i++)
     {
-        for(int32 i = 0; i < PARTICLE_COUNT; i++)
+        for(int32 j = 0; j < PARTICLE_COUNT; j++)
         {
-            if(Particles->Lifetime[i] <= 0.0f)
+            if(Particles->Lifetime[j] <= 0.0f)
             {
                 f32 Angle = RandomFloat(0.0f, 1.0f) * 2 * PI;
                 f32 Speed = RandomFloat(50.0f, 100.0f);
-                Particles->Position[i] = (Vector2){Position.x + RandomFloat(-5.0f, 5.0f), Position.y + RandomFloat(-5.0f, 5.0f)};
-                Particles->Velocity[i] = (Vector2){cosf(Angle) * Speed, sinf(Angle) * Speed};
-                Particles->Colors[i] = ParticleColor;
-                Particles->Size[i] = RandomFloat(0.5f, 1.5f);
-                Particles->Lifetime[i] = 1.0f;
+                Particles->Position[j] = (Vector2){Position.x + RandomFloat(-5.0f, 5.0f), Position.y + RandomFloat(-5.0f, 5.0f)};
+                Particles->Velocity[j] = (Vector2){cosf(Angle) * Speed, sinf(Angle) * Speed};
+                Particles->Colors[j] = ParticleColor;
+                Particles->Size[j] = RandomFloat(0.5f, 1.5f);
+                Particles->Lifetime[j] = 1.0f;
                 break;
             }
         }
     }
 }
 
-internal inline void DrawParticles(particle_system* Particles)
+void DrawParticles(particle_system* Particles)
 {
     for(int32 i = 0; i < PARTICLE_COUNT; i++)
     {

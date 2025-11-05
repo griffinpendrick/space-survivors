@@ -42,7 +42,7 @@ void UpdateEnemies(enemy_pool* Enemies, Vector2 PlayerPosition, f32 dt)
     }
 }
 
-internal inline void DrawEnemies(const enemy_pool Enemies)
+void DrawEnemies(const enemy_pool Enemies)
 {
     for(int32 i = 0; i < MAX_ENEMIES; i++)
     {
