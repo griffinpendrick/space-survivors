@@ -107,8 +107,24 @@ int main(void)
         int32 NewWindowWidth = GetScreenWidth();
         int32 NewWindowHeight = GetScreenHeight();
 
-        Camera.zoom = 1.0f;
-        Camera.target = (Vector2){WindowWidth / 2.0f, WindowHeight / 2.0f};
+        local_persist f32 TargetZoom = 1.0f;
+        f32 WheelMove = GetMouseWheelMove();
+        if(WheelMove != 0.0f)
+        {
+            TargetZoom = Clamp(TargetZoom + WheelMove, 1.0f, 10.0f);
+        }
+        Camera.zoom = Lerp(Camera.zoom, TargetZoom, 1.0f - expf(-10.0f * dt));
+
+        Vector2 CameraTarget;
+        if(Camera.zoom > 1.0f)
+        {
+            CameraTarget = Player.Position;
+        }
+        else
+        {
+            CameraTarget = (Vector2){WindowWidth / 2.0f, WindowHeight / 2.0f};
+        }
+        Camera.target = Vector2Lerp(Camera.target, CameraTarget, 1.0f - expf(-5.0f * dt));
 
         if(NewWindowWidth != WindowWidth || NewWindowHeight != WindowHeight)
         {
@@ -180,20 +196,16 @@ int main(void)
         {
             SpawnProjectile(&Projectiles, Player.Position, Player.Angle * DEG2RAD);
         }
-        if(IsKeyDown(KEY_E))
-        {
-            Camera.zoom = 2.0f;
-            Camera.target = Player.Position;
-        }
 
         BeginDrawing();
         ClearBackground(BACKGROUND_COLOR);
-        BeginMode2D(Camera);
 
         for(int32 i = 0; i < MAX_STARS; i++)
         {
             DrawCircleV(Stars[i], 1.0f, GRAY);
         }
+
+        BeginMode2D(Camera);
 
         DrawPlayer(Player);
         DrawProjectiles(Projectiles);
@@ -201,6 +213,7 @@ int main(void)
         DrawParticles(&Particles);
 
         EndMode2D();
+
         DrawFPS(10, 10);
         EndDrawing();
     }
