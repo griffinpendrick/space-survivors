@@ -26,6 +26,11 @@ global_const f32 ParticleSpawnInterval = 0.05f;
 internal void ShakeCamera(Camera2D* Camera, f32 dt)
 {
     CameraShakeStrength = Lerp(CameraShakeStrength, 0, ShakeDecayRate * dt);
+	if(CameraShakeStrength < 0.01f)
+	{
+		CameraShakeStrength = 0.0f;
+	}
+
     Camera->offset.x = WindowWidth / 2.0f + RandomFloat(-1.0f, 1.0f) * CameraShakeStrength;
     Camera->offset.y = WindowHeight / 2.0f + RandomFloat(-1.0f, 1.0f) * CameraShakeStrength;
 }
@@ -116,7 +121,7 @@ int main(void)
         Camera.zoom = Lerp(Camera.zoom, TargetZoom, 1.0f - expf(-10.0f * dt));
 
         Vector2 CameraTarget;
-        if(Camera.zoom > 1.0f)
+        if(TargetZoom > 1.0f)
         {
             CameraTarget = Player.Position;
         }
@@ -130,7 +135,6 @@ int main(void)
         {
             WindowWidth = NewWindowWidth;
             WindowHeight = NewWindowHeight;
-            Camera.target = (Vector2){WindowWidth / 2.0f, WindowHeight / 2.0f};
             Camera.offset = (Vector2){WindowWidth / 2.0f, WindowHeight / 2.0f};
 
             for(int32 i = 0; i < MAX_STARS; i++)
