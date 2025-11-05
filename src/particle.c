@@ -46,7 +46,7 @@ void EmitParticles(particle_system* Particles, Vector2 Position, Color ParticleC
     }
 }
 
-inline void DrawParticles(particle_system* Particles)
+internal inline void DrawParticles(particle_system* Particles)
 {
     for(int32 i = 0; i < PARTICLE_COUNT; i++)
     {

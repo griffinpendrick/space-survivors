@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#pragma warning(push, 0)
 #include "raylib.h"
 #include "raymath.h"
-#pragma warning pop
 
 #include "utils.h"
 #include "particle.c"
@@ -22,7 +20,7 @@ global int32 WindowHeight = 720;
 global_const f32 ShakeDecayRate = 3.0f;
 global f32 CameraShakeStrength = 0.0f;
 
-internal void UpdateCamera(Camera2D* Camera, f32 dt)
+internal void ShakeCamera(Camera2D* Camera, f32 dt)
 {
     CameraShakeStrength = Lerp(CameraShakeStrength, 0, ShakeDecayRate * dt);
     Camera->offset.x = WindowWidth / 2.0f + RandomFloat(-1.0f, 1.0f) * CameraShakeStrength;
@@ -59,10 +57,12 @@ int main(void)
     SetTraceLogLevel(LOG_WARNING);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_HIGHDPI);
     InitWindow(WindowWidth, WindowHeight, "Space Survivors");
-    SetTargetFPS(60);
+    // SetTargetFPS(60);
 
-    Image WindowIcon = LoadImage("..\\assets\\enemy.png");
+	#if defined(PLATFORM_DESKTOP)
+    Image WindowIcon = LoadImage("../assets/enemy.png");
     SetWindowIcon(WindowIcon);
+	#endif
 
     srand((uint32)time(NULL));
 
@@ -80,10 +80,10 @@ int main(void)
 
     enemy_pool Enemies;
     memset(&Enemies, 0, sizeof(enemy_pool));
-    Enemies.Texture = LoadTexture("..\\assets\\enemy.png");
+    Enemies.Texture = LoadTexture("../assets/enemy.png");
 
     player Player;
-    Player.Texture = LoadTexture("..\\assets\\ship.png");
+    Player.Texture = LoadTexture("../assets/ship.png");
     Player.Position = (Vector2){WindowWidth / 2.0f, WindowHeight / 2.0f};
     Player.Velocity = (Vector2){0.0f, 0.0f};
     Player.Acceleration = (Vector2){300.0f, 300.0f};
@@ -124,7 +124,7 @@ int main(void)
         UpdateProjectiles(&Projectiles, WindowWidth, WindowHeight, dt);
         UpdateEnemies(&Enemies, Player.Position, dt);
         UpdatePlayer(&Player, WindowWidth, WindowHeight, dt);
-        UpdateCamera(&Camera, dt);
+        ShakeCamera(&Camera, dt);
 
         for(int32 i = 0; i < MAX_STARS; i++)
         {
@@ -197,7 +197,10 @@ int main(void)
         EndDrawing();
     }
 
+	#if defined(PLATFORM_DESKTOP)
     UnloadImage(WindowIcon);
+	#endif
+
     UnloadTexture(Player.Texture);
     UnloadTexture(Enemies.Texture);
 

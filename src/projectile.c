@@ -46,7 +46,7 @@ void UpdateProjectiles(projectile_pool* Projectiles, int32 WindowWidth, int32 Wi
     }
 }
 
-inline void DrawProjectiles(const projectile_pool Projectiles)
+internal inline void DrawProjectiles(const projectile_pool Projectiles)
 {
     for(int32 i = 0; i < MAX_PROJECTILES; i++)
     {
