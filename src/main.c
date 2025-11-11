@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
+#include "rlgl.h"
 
 #include "utils.h"
 #include "particle.c"
@@ -12,7 +13,7 @@ global_const int32 WindowWidth = 1280;
 global_const int32 WindowHeight = 720;
 
 #define BACKGROUND_COLOR (Color){15, 15, 15, 255}
-#define MAX_STARS 32
+#define MAX_STARS 128
 #define PARALLAX_STRENGTH 0.25f
 
 global f32 ParticleSpawnTimer = 0.0f;
@@ -44,6 +45,26 @@ internal void ResolveCollisions(projectile_pool* Projectiles, enemy_pool* Enemie
     }
 }
 
+internal void DrawStars(Vector2* Stars, Color C)
+{
+    rlSetTexture(0);
+    rlBegin(RL_QUADS);
+    rlColor4ub(C.r, C.g, C.b, C.a);
+
+    for(int32 i = 0; i < MAX_STARS; i++)
+    {
+        f32 X = Stars[i].x;
+        f32 Y = Stars[i].y;
+
+        rlVertex2f(X - 1.0f, Y - 1.0f);
+        rlVertex2f(X + 1.0f, Y - 1.0f);
+        rlVertex2f(X + 1.0f, Y + 1.0f);
+        rlVertex2f(X - 1.0f, Y + 1.0f);
+    }
+
+    rlEnd();
+}
+
 internal void DrawUI(void)
 {
     DrawFPS(10, 10);
@@ -52,12 +73,14 @@ internal void DrawUI(void)
 int main(void)
 {
     SetTraceLogLevel(LOG_WARNING);
-    SetConfigFlags(FLAG_WINDOW_HIGHDPI);
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI /*| FLAG_VSYNC_HINT*/);
     InitWindow(WindowWidth, WindowHeight, "Space Survivors");
     // SetTargetFPS(60);
-
     InitAudioDevice();
     SetMasterVolume(0.1f);
+
+    rlDisableBackfaceCulling();
+    rlDisableDepthTest();
 
 	#if defined(_WIN32)
     Image WindowIcon = LoadImage("../assets/enemy.png");
@@ -141,11 +164,7 @@ int main(void)
 
         BeginDrawing();
         ClearBackground(BACKGROUND_COLOR);
-
-        for(int32 i = 0; i < MAX_STARS; i++)
-        {
-            DrawCircleV(Stars[i], 1.0f, GRAY);
-        }
+        DrawStars(Stars, GRAY);
 
         BeginMode2D(GameCamera.Camera);
         DrawPlayer(Player, PlayerTexture);
