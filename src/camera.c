@@ -12,7 +12,7 @@ struct game_camera
     f32 TargetZoom;
 };
 
-inline void ShakeCamera(game_camera* GameCamera)
+INLINE void ShakeCamera(game_camera* GameCamera)
 {
     GameCamera->CameraShakeStrength = 10.0f;
 }

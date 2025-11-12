@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+#if defined(_MSC_VER)
+#define INLINE __inline
+#else
+#define INLINE static inline
+#endif
+
 #define internal static
 #define local_persist static
 #define global static
@@ -24,7 +30,7 @@ typedef int32_t bool32;
 typedef float f32;
 typedef double f64;
 
-inline f32 RandomFloat(f32 Min, f32 Max)
+INLINE f32 RandomFloat(f32 Min, f32 Max)
 {
     return(Min + ((f32)GetRandomValue(0, INT32_MAX) / (f32)INT32_MAX) * (Max - Min));
 }
