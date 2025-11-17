@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "utils.h"
+#include "common.h"
 
 #define MAX_PROJECTILES 32
 #define PROJECTILE_SPEED 400.0f

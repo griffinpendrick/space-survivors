@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "utils.h"
+#include "common.h"
 
 #define MAX_ENEMIES 256
 #define ENEMY_SPEED 50.0f

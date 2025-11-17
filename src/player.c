@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "utils.h"
+#include "common.h"
 
 #define ROTATION_SPEED 300.0f
 #define FRICTION_COEFFICIENT 0.98f

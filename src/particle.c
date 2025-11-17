@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "utils.h"
+#include "common.h"
 
 #define PARTICLE_COUNT 1024
 

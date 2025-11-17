@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "utils.h"
+#include "common.h"
 
 #define SHAKE_DECAY_RATE 3.0f
 
