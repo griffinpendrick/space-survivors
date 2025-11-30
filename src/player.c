@@ -22,11 +22,10 @@ void AcceleratePlayer(player* Player, f32 dt)
     Player->Velocity.y += Direction.y * Player->Acceleration.y * dt;
 }
 
-void UpdatePlayer(player* Player, int32 WindowWidth, int32 WindowHeight, f32 dt)
+void UpdatePlayer(player* Player, f32 dt)
 {
     Player->Velocity = Vector2Lerp(Player->Velocity, (Vector2){0.0f, 0.0f}, FRICTION_COEFFICIENT * dt);
-    Player->Position.x += Player->Velocity.x * dt;
-    Player->Position.y += Player->Velocity.y * dt;
+    Player->Position = Vector2Add(Player->Position, Vector2Scale(Player->Velocity, dt));
 
     Player->Position.x = Wrap(Player->Position.x, -15.0f, WindowWidth + 15.0f);
     Player->Position.y = Wrap(Player->Position.y, -15.0f, WindowHeight + 15.0f);

@@ -12,6 +12,7 @@ struct particle_system
     Color Colors[PARTICLE_COUNT];
     f32 Sizes[PARTICLE_COUNT];
     f32 Lifetimes[PARTICLE_COUNT];
+    f32 Accumulator;
 };
 
 void UpdateParticles(particle_system* Particles, f32 dt)
@@ -53,7 +54,6 @@ void DrawParticles(particle_system* Particles)
     {
         if(Particles->Lifetimes[i] > 0.0f)
         {
-            Particles->Colors[i].a = (uint8)(255.0f * Clamp(Particles->Lifetimes[i], 0.0f, 1.0f));
             DrawCircleV(Particles->Positions[i], Particles->Sizes[i], Particles->Colors[i]);
         }
     }

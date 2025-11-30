@@ -27,7 +27,7 @@ void SpawnProjectile(projectile_pool* Projectiles, Vector2 Position, f32 Angle)
     }
 }
 
-void UpdateProjectiles(projectile_pool* Projectiles, int32 WindowWidth, int32 WindowHeight, f32 dt)
+void UpdateProjectiles(projectile_pool* Projectiles, f32 dt)
 {
     for(int32 i = 0; i < MAX_PROJECTILES; i++)
     {
