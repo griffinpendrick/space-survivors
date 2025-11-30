@@ -2,7 +2,7 @@
 #include "raymath.h"
 #include "common.h"
 
-#define MAX_ENEMIES 256
+#define MAX_ENEMIES 128
 #define ENEMY_SPEED 50.0f
 #define SPAWN_RADIUS 500.0f
 
