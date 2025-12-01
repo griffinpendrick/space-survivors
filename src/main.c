@@ -41,10 +41,8 @@ struct game_state
     enemy_pool Enemies;
     particle_system Particles;
     projectile_pool Projectiles;
-
     Camera2D Camera;
     f32 CameraShakeStrength;
-
     bool32 IsRunning;
 };
 
@@ -62,6 +60,7 @@ internal void InitGame(game_state* State)
     State->Camera.target = WindowCenter;
     State->Camera.offset = WindowCenter;
     State->Camera.zoom = 1.0f;
+    State->CameraShakeStrength = 0.0f;
 
     // NOTE(griffin): TEMP
     SpawnEnemies(&State->Enemies, State->Player.Position, 10);
@@ -151,7 +150,7 @@ internal void DrawBackground(void)
 
 internal void DrawMainMenu(game_state* State)
 {
-	DrawText("Space Survivors", (WindowWidth / 2) - (MeasureText("Space Survivors", 48) / 2), (WindowHeight / 2) - 200, 48, WHITE);
+	DrawText("Space Survivors", (WindowWidth / 2) - (MeasureText("Space Survivors", 64) / 2), (WindowHeight / 2) - 200, 64, WHITE);
 	if(DoButton("Play", (WindowWidth / 2) - (MeasureText("Play", 48) / 2), (WindowHeight / 2), 48))
 	{
 	    State->Type = Playing;
@@ -171,7 +170,6 @@ internal void DrawMainMenu(game_state* State)
 internal void DrawPausedMenu(game_state* State)
 {
 	DrawText("Paused", (WindowWidth / 2) - (MeasureText("Paused", 48) / 2), (WindowHeight / 2) - 200, 48, WHITE);
-
 	if(DoButton("Resume", (WindowWidth / 2) - (MeasureText("Resume", 48) / 2), (WindowHeight / 2), 48))
 	{
 	    State->Type = Playing;
@@ -187,23 +185,32 @@ internal void DrawPausedMenu(game_state* State)
 	}
 }
 
-// NOTE(griffin): TEMP
-internal void DrawControlsMenu(void)
+internal void DrawControlsMenu(game_state* State)
 {
-	DrawText("Controls", (WindowWidth / 2) - (MeasureText("Controls", 48) / 2), (WindowHeight / 2) - 200, 48, WHITE);
+    DrawText("Controls", (WindowWidth / 2) - (MeasureText("Controls", 48) / 2), (WindowHeight / 2) - 220, 48, WHITE);
+    DrawText("W - Move Forward", (WindowWidth / 2) - (MeasureText("W - Move Forward", 48) / 2), (WindowHeight / 2) - 100, 48, WHITE);
+    DrawText("A - Rotate Left", (WindowWidth / 2) - (MeasureText("A - Rotate Left", 48) / 2), (WindowHeight / 2) - 50, 48, WHITE);
+    DrawText("D - Rotate Right", (WindowWidth / 2) - (MeasureText("D - Rotate Right", 48) / 2), (WindowHeight / 2), 48, WHITE);
+    DrawText("SPACE - Shoot", (WindowWidth / 2) - (MeasureText("SPACE - Shoot", 48) / 2), (WindowHeight / 2) + 50, 48, WHITE);
+    DrawText("ESC - Pause / Back", (WindowWidth / 2) - (MeasureText("ESC - Pause / Back", 48) / 2), (WindowHeight / 2) + 100, 48, WHITE);
+    if(DoButton("Back", (WindowWidth / 2) - (MeasureText("Back", 48) / 2), WindowHeight - 100, 48))
+    {
+        State->Type = State->LastType;
+    }
 }
+
 
 internal void DrawGameOver(game_state* State)
 {
-	DrawText("Game Over!", (WindowWidth / 2) - (MeasureText("Game Over!", 48) / 2), (WindowHeight / 2) - 200, 48, WHITE);
-
-	if(DoButton("Main Menu", (WindowWidth / 2) - (MeasureText("Main Menu", 48) / 2), (WindowHeight / 2), 48))
+	DrawText("Game Over!", (WindowWidth / 2) - (MeasureText("Game Over!", 64) / 2), (WindowHeight / 2) - 200, 64, WHITE);
+	if(DoButton("Restart", (WindowWidth / 2) - (MeasureText("Restart", 48) / 2), (WindowHeight / 2), 48))
+	{
+	    State->Type = Playing;
+		InitGame(State);
+	}
+	if(DoButton("Back to Main Menu", (WindowWidth / 2) - (MeasureText("Back to Main Menu", 48) / 2), (WindowHeight / 2) + 50, 48))
 	{
 	    State->Type = MainMenu;
-	}
-	if(DoButton("Quit", (WindowWidth / 2) - (MeasureText("Quit", 48) / 2), (WindowHeight / 2) + 50, 48))
-	{
-	    State->Type = Quit;
 	}
 }
 
@@ -253,7 +260,7 @@ int main(void)
 				    State.Type = State.LastType;
 				}
 
-				DrawControlsMenu();
+				DrawControlsMenu(&State);
 				break;
 			}
 			case Playing:
