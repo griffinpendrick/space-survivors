@@ -3,14 +3,17 @@
 #include "common.h"
 
 #define MAX_ENEMIES 128
-#define ENEMY_SPEED 50.0f
-#define SPAWN_RADIUS 500.0f
 
 typedef struct enemy_pool enemy_pool;
 struct enemy_pool
 {
     Vector2 Positions[MAX_ENEMIES];
     bool32 Active[MAX_ENEMIES];
+    f32 Speed;
+    f32 Damage;
+    int32 CurrentWave;
+    int32 EnemiesToSpawn;
+    int32 EnemiesRemaining;
 };
 
 void SpawnEnemies(enemy_pool* Enemies, Vector2 Position, int32 Amount)
@@ -22,12 +25,23 @@ void SpawnEnemies(enemy_pool* Enemies, Vector2 Position, int32 Amount)
             if(!Enemies->Active[j])
             {
                 f32 Angle = RandomFloat(0.0f, 1.0f) * 2 * PI;
-                Enemies->Positions[j] = (Vector2){Position.x + cosf(Angle) * SPAWN_RADIUS, Position.y + sinf(Angle) * SPAWN_RADIUS};
+                f32 SpawnRadius = RandomFloat(150.0f, 500.0f);
+                Enemies->Positions[j] = (Vector2){Position.x + cosf(Angle) * SpawnRadius, Position.y + sinf(Angle) * SpawnRadius};
                 Enemies->Active[j] = true;
                 break;
             }
         }
     }
+}
+
+void StartNextWave(enemy_pool* Enemies, Vector2 Position)
+{
+    Enemies->CurrentWave++;
+    Enemies->EnemiesToSpawn = 10 + (Enemies->CurrentWave - 1) * 5;
+    Enemies->Speed += 5.0f;
+    Enemies->Damage += 1.0f;
+    Enemies->EnemiesRemaining = Enemies->EnemiesToSpawn;
+    SpawnEnemies(Enemies, Position, Enemies->EnemiesToSpawn);
 }
 
 void UpdateEnemies(enemy_pool* Enemies, Vector2 PlayerPosition, f32 dt)
@@ -37,7 +51,7 @@ void UpdateEnemies(enemy_pool* Enemies, Vector2 PlayerPosition, f32 dt)
         if(Enemies->Active[i])
         {
             Vector2 Direction = Vector2Normalize(Vector2Subtract(PlayerPosition, Enemies->Positions[i]));
-            Enemies->Positions[i] = Vector2Add(Enemies->Positions[i], Vector2Scale(Direction, ENEMY_SPEED * dt));
+            Enemies->Positions[i] = Vector2Add(Enemies->Positions[i], Vector2Scale(Direction, Enemies->Speed * dt));
         }
     }
 }

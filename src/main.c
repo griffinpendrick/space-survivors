@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -50,11 +52,18 @@ internal void InitGame(game_state* State)
 {
     State->Particles = (particle_system){0};
     State->Projectiles = (projectile_pool){0};
+
     State->Enemies = (enemy_pool){0};
+    State->Enemies.CurrentWave = 1;
+    State->Enemies.EnemiesToSpawn = 10;
+    State->Enemies.EnemiesRemaining = 10;
+    State->Enemies.Speed = 50.0f;
+    State->Enemies.Damage = 1.0f;
 
     State->Player = (player){0};
     State->Player.Position = WindowCenter;
     State->Player.Acceleration = (Vector2){300.0f, 300.0f};
+    State->Player.Health = 100.0f;
 
     State->Camera = (Camera2D){0};
     State->Camera.target = WindowCenter;
@@ -62,8 +71,7 @@ internal void InitGame(game_state* State)
     State->Camera.zoom = 1.0f;
     State->CameraShakeStrength = 0.0f;
 
-    // NOTE(griffin): TEMP
-    SpawnEnemies(&State->Enemies, State->Player.Position, 10);
+    SpawnEnemies(&State->Enemies, State->Player.Position, State->Enemies.EnemiesToSpawn);
 }
 
 INLINE void ShakeCamera(game_state* State)
@@ -91,6 +99,7 @@ internal void ResolveCollisions(game_state* State)
                     if(Vector2Distance(State->Projectiles.Positions[i], State->Enemies.Positions[j]) < 32.0f)
                     {
                         State->Enemies.Active[j] = false;
+                        State->Enemies.EnemiesRemaining--;
                         State->Projectiles.Active[i] = false;
 
                         EmitParticles(&State->Particles, State->Enemies.Positions[j], RED, 32);
@@ -108,7 +117,15 @@ internal void ResolveCollisions(game_state* State)
         {
             if(Vector2Distance(State->Player.Position, State->Enemies.Positions[i]) < 32.0f)
             {
-                State->Type = GameOver;
+                if(State->Player.DamageCooldown <= 0.0f)
+                {
+                    State->Player.Health -= State->Enemies.Damage;
+                    State->Player.DamageCooldown = 0.25f;
+                }
+                if(State->Player.Health <= 0)
+                {
+                    State->Type = GameOver;
+                }
                 break;
             }
         }
@@ -214,6 +231,34 @@ internal void DrawGameOver(game_state* State)
 	}
 }
 
+// NOTE(griffin): TEMP
+internal void DrawHUD(game_state* State)
+{
+    const f32 MaxHealth = 100.0f;
+    f32 Health = Clamp(State->Player.Health, 0.0f, MaxHealth);
+
+    f32 BarWidth  = 200.0f;
+    f32 BarHeight = 20.0f;
+
+    f32 X = 20.0f;
+    f32 Y = WindowHeight - BarHeight - 20.0f;
+
+    f32 HealthPercent = Health / MaxHealth;
+    f32 FillWidth = BarWidth * HealthPercent;
+
+    DrawRectangle((int32)X, (int32)Y, (int32)BarWidth, (int32)BarHeight, BLACK);
+    DrawRectangle((int32)X, (int32)Y, (int32)FillWidth, (int32)BarHeight, RED);
+    DrawRectangleLines((int32)X, (int32)Y, (int32)BarWidth, (int32)BarHeight, WHITE);
+
+    char HealthBarLabel[64];
+    snprintf(HealthBarLabel, sizeof(HealthBarLabel), "Health: %.0f", Health);
+    DrawText(HealthBarLabel, (int32)(X + (BarWidth / 2) - (MeasureText(HealthBarLabel, 18) / 2)), (int32)(Y + (BarHeight / 2) - 9), 18, WHITE);
+
+    char WaveText[64];
+    snprintf(WaveText, sizeof(WaveText), "Wave: %d", State->Enemies.CurrentWave);
+    DrawText(WaveText, WindowWidth - MeasureText(WaveText, 32) - 20, 20, 32, WHITE);
+}
+
 int main(void)
 {
     SetTraceLogLevel(LOG_WARNING);
@@ -315,6 +360,10 @@ int main(void)
 					UpdateBackground(&State, dt);
 
 					ResolveCollisions(&State);
+					if(State.Enemies.EnemiesRemaining <= 0)
+					{
+					    StartNextWave(&State.Enemies, State.Player.Position);
+					}
 
 					BeginMode2D(State.Camera);
 
@@ -324,6 +373,7 @@ int main(void)
 					DrawParticles(&State.Particles);
 
 					EndMode2D();
+					DrawHUD(&State);
 					break;
 				}
 				case Paused:
@@ -341,6 +391,7 @@ int main(void)
 					DrawParticles(&State.Particles);
 
 					EndMode2D();
+					DrawHUD(&State);
 					DrawPausedMenu(&State);
 					break;
 				}

@@ -12,6 +12,8 @@ struct player
     Vector2 Velocity;
     Vector2 Acceleration;
     f32 Angle;
+    f32 Health;
+    f32 DamageCooldown;
 };
 
 void AcceleratePlayer(player* Player, f32 dt)
@@ -29,6 +31,8 @@ void UpdatePlayer(player* Player, f32 dt)
 
     Player->Position.x = Wrap(Player->Position.x, -15.0f, WindowWidth + 15.0f);
     Player->Position.y = Wrap(Player->Position.y, -15.0f, WindowHeight + 15.0f);
+
+    Player->DamageCooldown -= dt;
 }
 
 void DrawPlayer(player Player, Texture2D PlayerTexture)
