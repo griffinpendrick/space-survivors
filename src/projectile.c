@@ -1,7 +1,3 @@
-#include "raylib.h"
-#include "raymath.h"
-#include "common.h"
-
 #define MAX_PROJECTILES 32
 #define PROJECTILE_SPEED 400.0f
 
@@ -33,8 +29,8 @@ void UpdateProjectiles(projectile_pool* Projectiles, f32 dt)
     {
         if(Projectiles->Active[i])
         {
-            if(Projectiles->Positions[i].x < 0 || Projectiles->Positions[i].x > WindowWidth ||
-               Projectiles->Positions[i].y < 0 || Projectiles->Positions[i].y > WindowHeight)
+            if(Projectiles->Positions[i].x < 0 || Projectiles->Positions[i].x > WINDOW_WIDTH ||
+               Projectiles->Positions[i].y < 0 || Projectiles->Positions[i].y > WINDOW_HEIGHT)
             {
                 Projectiles->Active[i] = false;
             }

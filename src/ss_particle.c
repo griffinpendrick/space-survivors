@@ -1,14 +1,10 @@
-#include "raylib.h"
-#include "raymath.h"
-#include "common.h"
-
 #define PARTICLE_COUNT 1024
 
 typedef struct particle_system particle_system;
 struct particle_system
 {
-    Vector2 Positions[PARTICLE_COUNT];
-    Vector2 Velocities[PARTICLE_COUNT];
+    v2 Positions[PARTICLE_COUNT];
+    v2 Velocities[PARTICLE_COUNT];
     Color Colors[PARTICLE_COUNT];
     f32 Sizes[PARTICLE_COUNT];
     f32 Lifetimes[PARTICLE_COUNT];
@@ -27,7 +23,7 @@ void UpdateParticles(particle_system* Particles, f32 dt)
     }
 }
 
-void EmitParticles(particle_system* Particles, Vector2 Position, Color ParticleColor, int Count)
+void EmitParticles(particle_system* Particles, v2 Position, Color ParticleColor, int Count)
 {
     for(int32 i = 0; i < Count; i++)
     {
@@ -37,8 +33,8 @@ void EmitParticles(particle_system* Particles, Vector2 Position, Color ParticleC
             {
                 f32 Angle = RandomFloat(0.0f, 1.0f) * 2 * PI;
                 f32 Speed = RandomFloat(50.0f, 100.0f);
-                Particles->Positions[j] = (Vector2){Position.x + RandomFloat(-5.0f, 5.0f), Position.y + RandomFloat(-5.0f, 5.0f)};
-                Particles->Velocities[j] = (Vector2){cosf(Angle) * Speed, sinf(Angle) * Speed};
+                Particles->Positions[j] = (v2){Position.x + RandomFloat(-5.0f, 5.0f), Position.y + RandomFloat(-5.0f, 5.0f)};
+                Particles->Velocities[j] = (v2){cosf(Angle) * Speed, sinf(Angle) * Speed};
                 Particles->Colors[j] = ParticleColor;
                 Particles->Sizes[j] = RandomFloat(0.5f, 1.5f);
                 Particles->Lifetimes[j] = 1.0f;
@@ -48,13 +44,13 @@ void EmitParticles(particle_system* Particles, Vector2 Position, Color ParticleC
     }
 }
 
-void DrawParticles(particle_system* Particles)
+void DrawParticles(particle_system Particles)
 {
     for(int32 i = 0; i < PARTICLE_COUNT; i++)
     {
-        if(Particles->Lifetimes[i] > 0.0f)
+        if(Particles.Lifetimes[i] > 0.0f)
         {
-            DrawCircleV(Particles->Positions[i], Particles->Sizes[i], Particles->Colors[i]);
+            DrawCircleV(Particles.Positions[i], Particles.Sizes[i], Particles.Colors[i]);
         }
     }
 }

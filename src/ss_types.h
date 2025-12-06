@@ -1,5 +1,5 @@
-#if !defined(COMMON_H)
-#define COMMON_H
+#if !defined(SS_TYPES_H)
+#define SS_TYPES_H
 
 #include <stdint.h>
 
@@ -30,13 +30,6 @@ typedef int32_t bool32;
 typedef float f32;
 typedef double f64;
 
-global int32 WindowWidth = 1280;
-global int32 WindowHeight = 720;
-global Vector2 WindowCenter = {1280 / 2.0f, 720 / 2.0f};
-
-INLINE f32 RandomFloat(f32 Min, f32 Max)
-{
-    return(Min + ((f32)GetRandomValue(0, INT32_MAX) / (f32)INT32_MAX) * (Max - Min));
-}
+typedef Vector2 v2;
 
 #endif
