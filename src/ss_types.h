@@ -32,4 +32,6 @@ typedef double f64;
 
 typedef Vector2 v2;
 
+#define ArrayCount(X) (sizeof((X)) / (sizeof((X)[0])))
+
 #endif

@@ -1,5 +1,7 @@
 @echo off
 
+if NOT "%Platform%" == "X64" IF NOT "%Platform%" == "x64" (call "shell.bat")
+
 if not exist C:\ss\bin mkdir C:\ss\bin
 pushd C:\ss\bin
 

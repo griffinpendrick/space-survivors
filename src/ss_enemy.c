@@ -5,6 +5,8 @@ struct enemy_pool
 {
     v2 Positions[MAX_ENEMIES];
     bool32 Active[MAX_ENEMIES];
+    
+    // NOTE(griffin): Probably should move enemy wave data out into game_state.
     f32 Speed;
     f32 Damage;
     int32 CurrentWave;

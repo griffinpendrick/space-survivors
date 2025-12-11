@@ -5,9 +5,10 @@ struct particle_system
 {
     v2 Positions[PARTICLE_COUNT];
     v2 Velocities[PARTICLE_COUNT];
-    Color Colors[PARTICLE_COUNT];
     f32 Sizes[PARTICLE_COUNT];
     f32 Lifetimes[PARTICLE_COUNT];
+        Color Colors[PARTICLE_COUNT];
+
     f32 Accumulator;
 };
 
@@ -23,7 +24,7 @@ void UpdateParticles(particle_system* Particles, f32 dt)
     }
 }
 
-void EmitParticles(particle_system* Particles, v2 Position, Color ParticleColor, int Count)
+void EmitParticles(particle_system* Particles, v2 Position, Color ParticleColor, int32 Count)
 {
     for(int32 i = 0; i < Count; i++)
     {
@@ -31,7 +32,7 @@ void EmitParticles(particle_system* Particles, v2 Position, Color ParticleColor,
         {
             if(Particles->Lifetimes[j] <= 0.0f)
             {
-                f32 Angle = RandomFloat(0.0f, 1.0f) * 2 * PI;
+                f32 Angle = RandomFloat(0.0f, 2.0f * PI);
                 f32 Speed = RandomFloat(50.0f, 100.0f);
                 Particles->Positions[j] = (v2){Position.x + RandomFloat(-5.0f, 5.0f), Position.y + RandomFloat(-5.0f, 5.0f)};
                 Particles->Velocities[j] = (v2){cosf(Angle) * Speed, sinf(Angle) * Speed};

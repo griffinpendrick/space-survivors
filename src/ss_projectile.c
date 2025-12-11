@@ -4,19 +4,19 @@
 typedef struct projectile_pool projectile_pool;
 struct projectile_pool
 {
-    Vector2 Positions[MAX_PROJECTILES];
-    Vector2 Directions[MAX_PROJECTILES];
+    v2 Positions[MAX_PROJECTILES];
+    v2 Directions[MAX_PROJECTILES];
     bool32 Active[MAX_PROJECTILES];
 };
 
-void SpawnProjectile(projectile_pool* Projectiles, Vector2 Position, f32 Angle)
+void SpawnProjectile(projectile_pool* Projectiles, v2 Position, f32 Angle)
 {
     for(int32 i = 0; i < MAX_PROJECTILES; i++)
     {
         if(!Projectiles->Active[i])
         {
             Projectiles->Positions[i] = Position;
-            Projectiles->Directions[i] = (Vector2){sinf(Angle), -cosf(Angle)};
+            Projectiles->Directions[i] = (v2){sinf(Angle), -cosf(Angle)};
             Projectiles->Active[i] = true;
             break;
         }
