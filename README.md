@@ -49,15 +49,15 @@ cd space-survivors
 
 ```
 assets/
-?? enemy.png
-?? ship.png
-?? sfx/
-?  ?? explosion.mp3
-?  ?? thruster.mp3
-?  ?? button.mp3
-?? music/
-   ?? menu.mp3
-   ?? gameplay.mp3
+-enemy.png
+-ship.png
+-sfx/
+ --explosion.mp3
+ --thruster.mp3
+ --button.mp3
+-music/
+ --menu.mp3
+ --gameplay.mp3
 ```
 
 3. Compile the game using GCC:
