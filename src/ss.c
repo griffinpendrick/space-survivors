@@ -39,19 +39,27 @@ INLINE v2 GetWindowCenter(void);
 internal int32 LoadHighScore(void)
 {
     FILE* File = fopen(HIGHSCORE_FILE, "r");
-    if (!File) return 0;
+	if(!File)
+	{
+		fprintf(stderr, "Unable to load highscore!\n");
+		return(0);
+	}
     
     int32 Score = 0;
     fscanf(File, "%d", &Score);
     fclose(File);
     
-    return Score;
+    return(Score);
 }
 
 internal void SaveHighScore(int32 Score)
 {
     FILE* File = fopen(HIGHSCORE_FILE, "w");
-    if (!File) return;
+	if(!File)
+	{
+		fprintf(stderr, "Unable to save highscore!\n");
+		return;
+	}
     
     fprintf(File, "%d", Score);
     fclose(File);
