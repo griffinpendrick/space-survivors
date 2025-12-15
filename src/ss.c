@@ -1,4 +1,5 @@
-// NOTE(griffin): This is only included for snprintf(), not a fan.
+// NOTE(griffin): _CRT_SECURE_NO_WARNINGS is here just for file operations, CRT maintainers make weird choices.
+#define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 
 #include "raylib.h"
@@ -39,11 +40,11 @@ internal int32 LoadHighScore(void)
 {
     FILE* File = fopen(HIGHSCORE_FILE, "r");
     if (!File) return 0;
-
+    
     int32 Score = 0;
     fscanf(File, "%d", &Score);
     fclose(File);
-
+    
     return Score;
 }
 
@@ -51,7 +52,7 @@ internal void SaveHighScore(int32 Score)
 {
     FILE* File = fopen(HIGHSCORE_FILE, "w");
     if (!File) return;
-
+    
     fprintf(File, "%d", Score);
     fclose(File);
 }
@@ -72,7 +73,7 @@ internal void InitGame(game_state* State)
     State->Player.Level = 1;
     State->Player.ProjectileCount = 1;
     State->Player.HighScore = LoadHighScore();
-
+    
     State->Camera.target = GetWindowCenter();
     State->Camera.offset = GetWindowCenter();
     State->Camera.zoom = 1.0f;
@@ -246,14 +247,14 @@ internal void DrawHUD(game_state* State)
 {
     if(State->Player.DamageCooldown > 0.0f){
         f32 Alpha = Clamp(State->Player.DamageCooldown / DAMAGE_COOLDOWN,
-            0.0f, 1.0f);
-
+                          0.0f, 1.0f);
+        
         DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-            (Color) {
-            255, 0, 0, (unsigned char)(Alpha * 120)
-        });
+                      (Color) {
+                          255, 0, 0, (unsigned char)(Alpha * 120)
+                      });
     }
-
+    
     f32 Health = Clamp(State->Player.Health, 0.0f, State->Player.MaxHealth);
     
     f32 MaxExp = ExpRequiredForLevelUp(State->Player.Level);
@@ -295,7 +296,7 @@ internal void DrawHUD(game_state* State)
     char LevelText[64];
     snprintf(LevelText, sizeof(LevelText), "Level: %d", State->Player.Level);
     DrawText(LevelText, WINDOW_WIDTH - MeasureText(LevelText, 32) - 20, 60, 32, WHITE);
-
+    
     char HighScoreText[64];
     snprintf(HighScoreText, sizeof(HighScoreText), "High Score: %d", State->Player.HighScore);
     DrawText(HighScoreText, (WINDOW_WIDTH / 2) - (MeasureText(HighScoreText, 35) / 2), 20, 35, YELLOW);
@@ -380,7 +381,7 @@ int main(void)
     
     rlDisableBackfaceCulling();
     rlDisableDepthTest();
-
+    
     EnemyTexture = LoadTexture("../assets/enemy.png");
     PlayerTexture = LoadTexture("../assets/ship.png");
     ExplosionSound = LoadSound("../assets/sfx/explosion.mp3");
@@ -413,7 +414,7 @@ int main(void)
     while (!WindowShouldClose() && IsRunning)
     {
         f32 dt = GetFrameTime();
-
+        
         BeginDrawing();
         DrawBackground();
         switch (State.Type)
@@ -588,6 +589,13 @@ int main(void)
                     StopSound(ThrusterSound);
                 }
                 
+                if (State.Enemies.CurrentWave > State.Player.HighScore)
+                {
+                    State.Player.HighScore = State.Enemies.CurrentWave;
+                    SaveHighScore(State.Player.HighScore);
+                }
+                
+                
                 DrawGameOver(&State);
                 break;
             }
@@ -596,21 +604,6 @@ int main(void)
                 IsRunning = false;
                 break;
             }
-
-            if (State.Enemies.CurrentWave > State.Player.HighScore)
-            {
-                State.Player.HighScore = State.Enemies.CurrentWave;
-                SaveHighScore(State.Player.HighScore);
-            }
-
-            DrawGameOver(&State);
-            break;
-        }
-        case Quit:
-        {
-            IsRunning = false;
-            break;
-        }
         }
         
         DrawFPS(10, 10);
